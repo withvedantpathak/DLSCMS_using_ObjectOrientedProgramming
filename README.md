@@ -1,9 +1,10 @@
 # Defence Logistics and Supply Chain Management System (DLSCMS)
 
-Object-oriented Java (17) application that manages stock across a network of bases, turns supply **requests** into **deliveries** with the right donor base and vehicle, and tracks everything on a simulated clock. It runs as a Bloomberg-style amber-on-black **terminal**. No external libraries, no database, no internet needed.
+Object-oriented Java (17) application that manages stock across a network of bases, turns supply **requests** into **deliveries** with the right donor base and vehicle, and tracks everything on a simulated clock. It runs as a CLI with no external libraries or databases. Runs without internet.
 
 **Authors:** Vedant Pathak (R045), Dhairya Shah (R057), Kanishak Thakran (R046) — SVKM's NMIMS MPSTME, Mumbai.
-All data is synthetic (generated with a fixed seed); no real operational data is used.
+
+**Note:** All data (bases, supplies, inventory, vehicles, scenario_requests, requests, deliveries, meta) is synthetic and fully reproducible with base names pulled from Indian city names. It comes from a seeded generator, so anyone can regenerate it, and no real defence information was involved.
 
 ## Quick start
 Requires **JDK 17 or newer** (`java -version`).
@@ -30,7 +31,5 @@ The launchers build `dist/dlscms.jar` automatically on first run. Type `HELP` in
 | `results/` | Dataset summary, test matrix, raw experiment runs (`raw/`), `summary.csv`, `stats.txt` |
 | `paper/`, `slides/` | Research paper and presentation (added after the model is accepted) |
 
-## Design in one paragraph
+## Design -in one paragraph-
 Domain classes (`Base`, `Supply`, `InventoryItem`, `SupplyRequest`, `Delivery`, and a `Vehicle` hierarchy of `Truck`, `FuelTruck`, `MedicalVan`, `Helicopter`) are coordinated by the `LogisticsManager` facade. Donor-base and vehicle choice use the Strategy pattern and can be switched at run time. Persistence is generic (`CsvRepository<T extends Persistable>`). Errors are checked exceptions from a custom hierarchy and are shown as a red `ERR` line, never a stack trace. See [docs/design.md](docs/design.md) and the UML diagrams in [docs/class_diagram.md](docs/class_diagram.md).
-
-## Status
