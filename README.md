@@ -11,7 +11,7 @@ Coordinated strategies cut mean lead time from **84.5 h** to **34.8 h** and tran
 
 **Authors:** Vedant Pathak (R045), Dhairya Shah (R057), Kanishak Thakran (R046)
 
-**Note:** All data (bases, supplies, inventory, vehicles, scenario_requests, requests, deliveries, meta) is synthetic and fully reproducible, with base names taken from Indian city names. It comes from a seeded generator, so anyone can regenerate it, and no real defence information was involved.
+**Note:** All data (bases, supplies, inventory, vehicles, scenario_requests, requests, deliveries, meta) is synthetic and fully reproducible, with base names taken from Indian city names. It comes from a seeded generator, so anyone can regenerate it, and no real defence information was involved. The generator guarantees that shortages can in principle be met, so the results describe the model, not real operations. The datasets are included in `data/`, and `scripts/gen_data.py` can regenerate them.
 
 ## Key Results (Mean ± Std over seeds 1–30)
 
@@ -32,7 +32,8 @@ Vehicle strategy FASTEST for the coordinated rows. The baseline picks both donor
 | | Surplus | 40.0 ± 8.5 | 98.8 ± 1.7 | 1,687 ± 110 |
 | | Random baseline | 84.5 ± 8.2 | 95.3 ± 1.3 | 2,043 ± 163 |
 
-All values are computed from `results/raw/runs.csv` (1,080 runs) and agree with `results/summary.csv`. Significance uses paired Wilcoxon signed-rank tests with Holm-Bonferroni correction over 93 tests (74 remain significant); see `results/stats.txt` and `docs/findings.md`.
+All values are computed from `results/raw/runs.csv` (1,080 runs) and agree with `results/summary.csv`. Significance uses paired Wilcoxon signed-rank tests with Holm-Bonferroni correction over 93 tests (74 remain significant). 
+**Details:** `results/stats.txt` and `docs/findings.md`.
 
 ## Experiment Design
 
@@ -46,9 +47,8 @@ All values are computed from `results/raw/runs.csv` (1,080 runs) and agree with 
 
 ## Unfulfilled Requests
 
-About 2% of requests stay open at the end of a run (2.2% small, 1.7% medium, 2.1% large, over all strategies). Each open request is classified by the simulator as stock-limited (donors keep their reorder level), waiting for a vehicle, or still in flight when the 168-hour horizon ends. On medium and large, almost all requests waiting for a vehicle or in flight are FUEL requests: fuel trucks are about 15% of the fleet and the slowest vehicle. A longer horizon and a larger fuel fleet were not tested, so the gap should be read as "within this horizon and fleet". Details: `docs/findings.md` and `results/unfulfilled_summary.txt`.
-
-**All data is synthetic and the generator guarantees that shortages can in principle be met, so the results describe the model, not real operations.**
+About 2% of requests stay open at the end of a run (2.2% small, 1.7% medium, 2.1% large, over all strategies). Each open request is classified by the simulator as stock-limited (donors keep their reorder level), waiting for a vehicle, or still in flight when the 168-hour horizon ends. On medium and large, almost all requests waiting for a vehicle or in flight are FUEL requests (fuel trucks are about 15% of the fleet and the slowest vehicle). 
+**Details:** `docs/findings.md` and `results/unfulfilled_summary.txt`.
 
 ## Repository Structure
 
@@ -87,17 +87,15 @@ DLSCMS_using_ObjectOrientedProgramming/
 ├── run.bat / run.sh            # Launchers (build the jar on first run)
 ```
 
-**Note**: No data download is needed. The datasets are included in `data/`, and `scripts/gen_data.py` can regenerate them.
-
 ## Environment Setup
 
-The application needs **JDK 17 or newer** and nothing else (no Maven, no external libraries, no internet).
+The application needs **JDK 17 or newer**
 
 ```bash
 java -version      # must report 17 or newer
 ```
 
-Only the optional analysis step (`scripts/analyze.py`) needs Python 3 with `numpy`, `scipy` and `matplotlib`.
+Only the optional analysis step (`scripts/analyze.py`) needs Python 3 with `numpy`, `scipy` and `matplotlib` libraries.
 
 ## Quick Start
 
@@ -111,7 +109,8 @@ Only the optional analysis step (`scripts/analyze.py`) needs Python 3 with `nump
 | Other dataset | `run.bat --data data\medium` | `./run.sh --data data/medium` |
 | Build and run all tests | `scripts\build.bat test` | `scripts/build.sh test` |
 
-The launchers build `dist/dlscms.jar` automatically on first run. Type `HELP` inside the program; the full guide is [docs/user_manual.md](docs/user_manual.md).
+The launchers build `dist/dlscms.jar` automatically on first run. Type `HELP` inside the program for help.
+**Details:** [docs/user_manual.md](docs/user_manual.md).
 
 ### Reproduce all results (30 seeds)
 
@@ -119,7 +118,8 @@ The launchers build `dist/dlscms.jar` automatically on first run. Type `HELP` in
 scripts/run_experiments.sh
 ```
 
-This generates one dataset per seed, replays all 1,080 runs, and writes `results/raw/runs.csv`, `results/summary.csv`, `results/stats.txt` and the figures in `paper/figures/`. The full grid took about 6.5 minutes in our run.
+This generates one dataset per seed, replays all 1,080 runs, and writes `results/raw/runs.csv`, `results/summary.csv`, `results/stats.txt` and the figures in `paper/figures/`. 
+The full grid took about **6.5 minutes** in our run.
 
 ### Run individual steps
 
@@ -129,20 +129,21 @@ python3 scripts/validate_data.py                               # validate datase
 scripts/check_repro.sh                                         # check determinism
 ```
 
-### Use your own data
+### If you want to try your own data
 
 Fill in the CSV files in `data/template/` and follow [docs/bring_your_own_data.md](docs/bring_your_own_data.md).
 
 ## Design
 
-Domain classes (`Base`, `Supply`, `InventoryItem`, `SupplyRequest`, `Delivery`, and a `Vehicle` hierarchy of `Truck`, `FuelTruck`, `MedicalVan`, `Helicopter`) are coordinated by the `LogisticsManager` facade. Donor-base and vehicle choice use the Strategy pattern and can be switched at run time. Persistence is generic (`CsvRepository<T extends Persistable>`). Errors are checked exceptions from a custom hierarchy and are shown as a red `ERR` line, never a stack trace. See [docs/design.md](docs/design.md) and the UML diagrams in [docs/class_diagram.md](docs/class_diagram.md).
+Domain classes (`Base`, `Supply`, `InventoryItem`, `SupplyRequest`, `Delivery`, and a `Vehicle` hierarchy of `Truck`, `FuelTruck`, `MedicalVan`, `Helicopter`) are coordinated by a `LogisticsManager`. Donor-base and vehicle choice use the Strategy pattern and can be switched at run time. Persistence is generic (`CsvRepository<T extends Persistable>`). Errors are checked exceptions from a custom hierarchy and are shown as a red `ERR` line, never a stack trace.
+**Details:** [docs/design.md](docs/design.md) and the UML diagrams in [docs/class_diagram.md](docs/class_diagram.md).
 
 ## Reproducibility
 
 - Datasets are produced by a seeded generator: seed 42 for the bundled data, seeds 1 to 30 for the experiments. The same seed always gives byte-identical files.
 - The random baselines use their own derived seeds, so every run is deterministic. `scripts/check_repro.sh` re-runs the grid twice and compares every column except timing.
 - Only `wall_ms` and `used_mb` in `results/raw/runs.csv` vary between runs.
-- Detailed generation rules are in [docs/dataset.md](docs/dataset.md).
+**Details:** [docs/dataset.md](docs/dataset.md).
 
 ## Citation
 
@@ -151,9 +152,8 @@ If you use this code or results, please cite:
 ```
 @misc{pathak2026dlscms,
   title  = {Design and Evaluation of an Object-Oriented Defence Logistics and Supply Chain Management System},
-  author = {Pathak, Vedant and Shah, Dhairya and Thakran, Kanishak},
+  author = {Vedant},
   year   = {2026},
-  note   = {Course project, Object Oriented Programming, SVKM's NMIMS MPSTME, Mumbai},
   url    = {https://github.com/withvedantpathak/DLSCMS_using_ObjectOrientedProgramming}
 }
 ```
