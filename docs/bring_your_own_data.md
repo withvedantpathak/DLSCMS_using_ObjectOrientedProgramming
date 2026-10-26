@@ -1,7 +1,5 @@
 # Bring your own data — loading an organisation's inventory
 
-> **Team / user-facing document only.** This guide is **not** part of the research paper or the slides (decision of 2026-10-18). It is shipped with the user manual and the GitHub repo.
-
 **Who this is for:** an organisation (a small or medium company, a depot, a relief group) that already keeps stock in a spreadsheet and wants to try DLSCMS on it. You do not need to write code. You need a spreadsheet program (Excel, LibreOffice, Google Sheets) that can save CSV files.
 
 ## 1. What the program needs
