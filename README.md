@@ -84,6 +84,7 @@ DLSCMS_using_ObjectOrientedProgramming/
 ├── docs/                       # Requirements, design, UML (docs/img), dataset notes,
 │                               #   findings, user manual
 ├── lib/                        # JUnit and Hamcrest jars (tests only)
+├── deliverables/               # Final report and presentation (add files here)
 ├── run.bat / run.sh            # Launchers (build the jar on first run)
 ```
 
