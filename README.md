@@ -77,14 +77,11 @@ DLSCMS_using_ObjectOrientedProgramming/
 │   ├── summary.csv             # Means and confidence intervals
 │   ├── stats.txt               # Paired tests with Holm correction
 │   └── ...                     # Dataset summary, test matrix, unfulfilled diagnosis
-├── paper/
-│   ├── paper.md / .docx / .pdf # Research paper
-│   └── figures/                # Result figures
-├── slides/                     # Presentation (.pptx and .pdf)
-├── docs/                       # Requirements, design, UML (docs/img), dataset notes,
+├── paper/figures/              # Result figures
+├── docs/                       # Design, UML (docs/img), dataset notes,
 │                               #   findings, user manual
 ├── lib/                        # JUnit and Hamcrest jars (tests only)
-├── deliverables/               # Final report and presentation (add files here)
+├── deliverables/               # Final paper (.pdf) and presentation (.pptx)
 ├── run.bat / run.sh            # Launchers (build the jar on first run)
 ```
 
